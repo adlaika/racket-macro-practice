@@ -9,8 +9,11 @@
   (syntax-parse stx
     [(_ x)
      #'x]
-    [(_ x (f a ...) more ...) 
-     #'(~~> (f x a ...) more ...)]))
+    [(_ x (f a ...) more ...)
+     #'(~~> (f x a ...) more ...)]
+    [(_ x id more ...)
+     #'(~~> x (id) more ...)]
+    ))
 
 (check-equal? (~~> 'hello) 'hello)
 (check-equal? (~~> (+ 1 2)) 3)
@@ -20,12 +23,12 @@
 (check-equal?  (~~> 5 (+ 1)) 6)
 (check-equal? (~~> 5 (+ 1) (* 2)) 12)
 
-
-#;(check-equal? (~~> #\a
+(check-equal? (~~> 1 number->string) "1")
+(check-equal? (~~> #\a
                    (list #\z)
                    list->string)
               "az")
-#;(check-equal?(~~> 'abc
+(check-equal?(~~> 'abc
                  symbol->string
                  string->bytes/utf-8
                  (bytes-ref 1)
